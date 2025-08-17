@@ -1,0 +1,85 @@
+npm=> Node Package Manager.It usually used to download and install packages.
+
+npx=> If the package is in local storage it will execute it otherwise first download and also execute then delete from memory and store it in temp.
+
+npm init=> will initialize Node.It will create package.json file,which will be used to take info for project packages. 
+npm init -y => initialize with default settings.
+
+<>...</>  This can be used to return multiple elements from a component => Called Fragment.
+
+return (
+  <div>
+    <h1>Hello</h1>
+    <p>World</p>
+  </div>
+);
+return (    These brackets are just used for code Good practise (clear and clean purpose) not hard and fast rule
+  <>
+    <h1>Hello</h1>
+    <p>World</p>
+  </>
+);
+
+react-router-dom is essentail to do url routings.
+
+Center => mx-auto || my-auto
+
+w-full => Take Width Of Your Parent
+
+
+uncaught exception: Is a synchronous error that was not caught with a try...catch block.
+
+An unhandled promise rejection happens when a promise fails, but you don’t use .catch() or try/catch with async/await.
+
+When I was new with flutter and node, Each time when a response came from backend I had to match the response message's characters to check wheather the reponse was success or failure 
+But with the use of error handling each time the frontend automatically came to know that the response is incase of failuer or success because incase of failue I have used new ErrorHandler("something went wrong",400) then automatically goes to catch block of axios.
+
+Redux Toolkit is used here in this project to store the whole data of the user,It will prevent fetching data again and again that we need at many places.
+
+Redux=> Is simply a browser side Database
+
+Use vh when:
+You want something to take up a portion of the screen regardless of its parent.
+
+Use % when:
+The parent has a fixed height and you want a child to take part of it.
+
+when fixed is used then it require left,top,right and bottom.
+
+justify-center → horizontal centering of children
+items-center → vertical centering of children
+Both require the parent to be flex or grid
+
+Gradient Syntax in tailwind=>bg-gradient-to-r from-teal-400 to-teal-500
+
+
+Redux is only used when we need data at more than 1 place in our website.
+
+/* Becodemy gdrive -> https://drive.google.com/drive/folders/1VMYrWmM_WZNsfjOiMBkNU1M-JKUPAidc (also have deleted parts in it)
+
+
+To Add custom font in tailwind: App.css
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+@import "tailwindcss";
+
+*{
+    scroll-behavior: smooth;
+}
+
+@theme{
+    --font-roboto:Roboto,"sans-serif"
+}
+
+
+ className="bg-green-400 w-full flex flex-col md:flex-row pb-3">
+ flex is used to make the box flexBox other then that flex will not work in general
+
+YT link: 
+part 1: https://www.youtube.com/watch?v=XxnUSZOgMLY
+part 2: https://www.youtube.com/watch?v=5ZodHXPAJCQ
+part 3: https://www.youtube.com/watch?v=LfI7H8zZSpg
+part 4: https://www.youtube.com/watch?v=x2kwp-_m17I&t=2s&ab_channel=Becodemy
+Repo
+https://github.com/shahriarsajeeb/Eshop-tutorial/tree/master */
