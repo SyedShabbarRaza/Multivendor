@@ -1,5 +1,5 @@
 import React from 'react'
-import TrackOrder from "../components/Profile/TrackOrder";
+import TrackOrder from "../components/profile/TrackOrder";
 import Header from '../components/Layout/Header';
 import Footer from '../components/Layout/Footer';
 
