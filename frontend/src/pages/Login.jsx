@@ -7,8 +7,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import server from "../server.js";
 import { useSelector } from "react-redux";
-import { userReducer } from "../redux/reducers/user.js";
-import { loadUser } from "../redux/actions/user.js";
+// import { userReducer } from "../redux/reducers/user.js";
+// import { loadUser } from "../redux/actions/user.js";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
