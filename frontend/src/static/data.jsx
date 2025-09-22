@@ -321,7 +321,7 @@ export const navItems = [
       rating: 5,
       total_sell: 80,
       stock: 10,
-      category:"Mobile & Tablets"
+      // category:"Mobile & Tablets"
     },
     {
       id: 3,
@@ -352,7 +352,7 @@ export const navItems = [
       rating: 4,
       total_sell: 75,
       stock: 10,
-      category:"Computers & Laptop"
+      // category:"Computers & Laptop"
     },
     {
       id: 4,
@@ -414,7 +414,7 @@ export const navItems = [
       rating: 5,
       total_sell: 49,
       stock: 10,
-      category:"Shoes"
+      // category:"Shoes"
     },
     {
       id: 6,

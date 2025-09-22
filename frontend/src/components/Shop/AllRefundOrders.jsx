@@ -33,9 +33,6 @@ const AllRefundOrders = () => {
            "greenColor"
           : "redColor";
       },
-            cellClassName: (params) => {
-        return params.value === "Delivered" ? "greenColor" : "redColor";
-      },
     },
     {
       field: "itemsQty",
