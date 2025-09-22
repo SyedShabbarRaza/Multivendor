@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../components/Layout/Header'
 import { useSearchParams } from 'react-router-dom';
-import { productData } from '../static/data';
 import ProductCard from '../components/Route/ProductCard/ProductCard.jsx'
 import { useDispatch, useSelector } from 'react-redux';
 
