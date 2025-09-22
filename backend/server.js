@@ -1,3 +1,4 @@
+import { v2 as cloudinary } from "cloudinary";
 import app from "./app.js";
 import dotenv from 'dotenv'
 import db from "./db/mongo-connection.js"
@@ -8,9 +9,16 @@ if (process.env.NODE_ENV !== 'production') {
     });
 }
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const server = app.listen(process.env.PORT, () => {
   console.log(`server is running on http//localhost:${process.env.PORT}`);
+  // console.log("Stripe Secret Key:", process.env.STRIPE_SECRET_KEY?.slice(0, 10)); 
+
 });
 
 

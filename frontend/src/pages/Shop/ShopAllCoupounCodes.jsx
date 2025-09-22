@@ -1,7 +1,6 @@
 import React from 'react'
 import DashboardHeader from '../../components/Shop/Layout/DashboardHeader.jsx'
 import DashboardSideBar from '../../components/Shop/Layout/DashboardSideBar.jsx'
-import AllEvents from '../../components/Shop/AllEvents'
 import AllCoupounCodes from '../../components/Shop/AllCoupounCodes.jsx'
 
 function ShopAllCoupounCodes() {

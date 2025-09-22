@@ -13,7 +13,7 @@ const ShopCreate = () => {
   const [phoneNumber, setPhoneNumber] = useState();
   const [address, setAddress] = useState("");
   const [zipCode, setZipCode] = useState();
-  const [avatar, setAvatar] = useState();
+  const [avatar, setAvatar] = useState(null);
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
 
@@ -55,7 +55,7 @@ const handleSubmit =async (e) => {
   }catch(err){
     
     console.log("catchMein")
-      toast(`${err.message}`)
+      toast(`${err.response.data.message}`)
     }
   };
 
@@ -207,7 +207,7 @@ const handleSubmit =async (e) => {
                 <span className="inline-block h-8 w-8 rounded-full overflow-hidden">
                   {avatar ? (
                     <img
-                      src={avatar}
+                      src={URL.createObjectURL(avatar)}
                       alt="avatar"
                       className="h-full w-full object-cover rounded-full"
                     />

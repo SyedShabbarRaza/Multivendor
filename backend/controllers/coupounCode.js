@@ -5,8 +5,6 @@ import ErrorHandler from "../utils/ErrorHandler.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 // import product_model from "../models/product_model.js";
 import { isSeller } from "../middleware/isLoggedIn.js";
-// import event_model from "../models/event_model.js";
-// import fs from 'fs';
 import coupounCode_model from "../models/coupounCode_model.js";
 
 const router = express.Router();
@@ -54,5 +52,60 @@ router.get(
         }
       })
     );
+
+    // delete product of a shop
+    router.delete(
+          "/delete-shop-coupoun/:id",
+          isSeller,
+          catchAsyncErrors(async (req, res, next) => {
+                try {
+                    console.log(res)
+      const coupounId = req.params.id;
+
+      const eventData = await coupounCode_model.findById(coupounId);
+
+    //   eventData.images.forEach((imageUrl) => {
+    //         const filename = imageUrl;
+    //         const filePath = `backend/public/images/${filename}`;
+    
+    //         fs.unlink(filePath, (err) => {
+    //       if (err) {
+    //             console.log(err);
+    //           }
+    //         });
+    //       });
+    
+          const coupoun = await coupounCode_model.findByIdAndDelete(coupounId);
+    
+          if (!coupoun) {
+                return next(new ErrorHandler("coupoun not found with this id!", 500));
+      }
+
+      res.status(201).json({
+            success: true,
+        message: "coupoun Deleted successfully!",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+
+// get coupon code value by its name
+router.get(
+  "/getCouponValue/:name",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const couponCode = await coupounCode_model.findOne({ name: req.params.name });
+
+      res.status(200).json({
+        success: true,
+        couponCode,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
 
 export default router;

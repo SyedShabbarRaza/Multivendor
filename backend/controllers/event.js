@@ -1,12 +1,13 @@
 // const { isSeller } = require("../middleware/auth");
 // const fs = require("fs");
+import cloudinary from 'cloudinary'
 import express from "express";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import upload from "../multer.js";
 import shop_model from "../models/shop_model.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import product_model from "../models/product_model.js";
-import { isSeller } from "../middleware/isLoggedIn.js";
+import { isAdmin, isLoggedIn, isSeller } from "../middleware/isLoggedIn.js";
 import event_model from "../models/event_model.js";
 import fs from 'fs';
 
@@ -22,12 +23,32 @@ router.post(
       if (!shop) {
         return next(new ErrorHandler("Shop Id is invalid!", 400));
       } else {
-        const files = req.files;
-        const imageUrls = files.map((file) => `${file.filename}`);
+        // const files = req.files;
+        // const imageUrls = files.map((file) => `${file.filename}`);
 
-        const eventData = req.body;
-        eventData.images = imageUrls;
-        eventData.shop = shop;
+                 // Upload images to Cloudinary
+              const files = req.files; // multer files
+              const uploadedImages = await Promise.all(
+                files.map((file) =>
+                  cloudinary.v2.uploader.upload(file.path, {
+                    folder: "events",
+                  })
+                )
+              );
+
+              // Build product data
+      const eventData = {
+        ...req.body,
+        shop,
+        images: uploadedImages.map((img) => ({
+          public_id: img.public_id,
+          url: img.secure_url,
+        })),
+      };
+
+        // const eventData = req.body;
+        // eventData.images = imageUrls;
+        // eventData.shop = shop;
 
         const events = await event_model.create(eventData);
 
@@ -63,7 +84,7 @@ router.get(
     
     // delete product of a shop
     router.delete(
-          "/delete-shop-event/:id",
+          "/delete-shop-coupoun/:id",
           isSeller,
           catchAsyncErrors(async (req, res, next) => {
                 try {
@@ -94,6 +115,43 @@ router.get(
       });
     } catch (error) {
       return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+
+// get all products
+router.get(
+  "/get-all-events",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+          const allEvents = await event_model.find();
+    
+          res.status(201).json({
+        success: true,
+        allEvents,
+      });
+    } catch (error) {
+          return next(new ErrorHandler(error, 400));
+        }
+  })
+);
+
+// all events --- for admin
+router.get(
+  "/adminAllEvents",
+  isLoggedIn,
+  isAdmin("Admin"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const events = await event_model.find().sort({
+        createdAt: -1,
+      });
+      res.status(201).json({
+        success: true,
+        events,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
     }
   })
 );

@@ -53,7 +53,7 @@ function DashboardHeader () {
           </Link>
           <Link to={`/shop/${seller._id}`}>
             <img
-              src={"https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-user-profile-avatar-png-image_10211467.png"}
+              src={seller.avatar["url"]}
               alt=""
               className="w-[50px] h-[50px] rounded-full object-cover"
             />

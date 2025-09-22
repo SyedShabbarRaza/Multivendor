@@ -31,14 +31,14 @@ const CreateProduct = () => {
       navigate("/dashboard");
       window.location.reload();
     }
-  }, [error, success]);
+  }, [dispatch,error, success]);
 
   const handleImageChange = (e) => {
     e.preventDefault();
 
     let files = Array.from(e.target.files);
     setImages((prevImages) => [...prevImages, ...files]);
-  };
+  };//To put in images state
 
   console.log(images);
 
@@ -59,6 +59,8 @@ const CreateProduct = () => {
     newForm.append("stock", stock);
     newForm.append("shopId", seller._id);
     dispatch(createProduct(newForm));
+
+
   };
 
   return (

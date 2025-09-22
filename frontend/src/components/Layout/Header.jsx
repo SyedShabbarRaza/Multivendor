@@ -17,9 +17,12 @@ import server from "../../server.js";
 import ShoppingCart from "../ShoppingCart/ShoppingCart.jsx";
 import Wishlist from "../Wishlist/Wishlist.jsx";
 import { RxCross1 } from "react-icons/rx";
-
+import oppo from '../../assets/oppo.jpeg'
 function Header({ activeHeading }) {
   const { isAuthenticated, user } = useSelector((state) => state.user);
+  const { isSeller } = useSelector((state) => state.seller);
+  const { cart } = useSelector((state) => state.cart);
+  const { wishlist } = useSelector((state) => state.wishlist);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);
   const [dropDown, setDropDown] = useState(false);
@@ -27,21 +30,26 @@ function Header({ activeHeading }) {
   const [openCart, setOpenCart] = useState(false);
   const [open, setOpen] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
+  const {allProducts}=useSelector((state)=>state.products);
 
-  console.log("isAuthenticated:", isAuthenticated);
-  console.log("user:", user);
   const handleSearchChange = (e) => {
-    let filteredProducts = [];
     const term = e.target.value;
-    setSearchTerm(term);
-    filteredProducts =
-      productData &&
-      productData.filter((product) => {
-        return product.name.toLowerCase().includes(searchTerm.toLowerCase());
-      });
-    console.log("filteredProducts", filteredProducts);
-    setSearchData(filteredProducts);
+  setSearchTerm(term);
+
+  if (term.trim() === "") {
+    setSearchData([]); // clear results when input is empty
+    return;
+  }
+
+  const filteredProducts =
+    allProducts &&
+    allProducts.filter((product) =>
+      product.name.toLowerCase().includes(term.toLowerCase())
+    );
+
+  setSearchData(filteredProducts);
   };
+  
   window.addEventListener("scroll", () => {
     if (window.scrollY > 70) {
       setActive(true);
@@ -75,18 +83,22 @@ function Header({ activeHeading }) {
               size={30}
               className="absolute right-2 top-1.5 cursor-pointer"
             />
-            {searchData && searchData.length !== 0 ? (
-              <div className="absolute min-h-[30vh] bg-green-50 shadow-sm-2 z-[9] p-3">
+            {searchData && searchData.length > 0 ? (
+              <div className="absolute bg-green-50 shadow-sm-2 z-[9] p-3">
                 {searchData &&
                   searchData.map((i, index) => {
-                    const d = i.name;
-                    const Product_name = d.replace(/\s+/g, "-");
+                    // const d = i.name;
+                    // const Product_name = d.replace(/\s+/g, "-");
                     return (
-                      <Link to={`/product/${Product_name}`} key={index}>
+                      <Link to={`/product/${i._id}`} key={index}>
                         <div className="w-full flex items-start py-3">
                           <img
-                            src={`${i.image_Url[0].url}`}
+                            src={`${i.images[0]}`}
                             alt=""
+                            onError={(e)=>{
+                              e.target.onerror=null;
+                              e.target.src=oppo
+                            }}
                             className="w-[40px] h-[40px] mr-[10px]"
                           />
                           <h1>{i.name}</h1>
@@ -98,10 +110,10 @@ function Header({ activeHeading }) {
             ) : null}
           </div>
 
-          <div className={`${styles.button}`}>
+          <div className="w-40 bg-black h-[50px] my-3 flex items-center justify-center rounded-xl cursor-pointer">
             <Link to="/shop-create">
               <h1 className="text-[#fff] flex items-center">
-                Become Seller <IoIosArrowRoundForward className="ml-1" />
+                {isSeller?"Go to Dashboard":"Become Seller"} <IoIosArrowRoundForward className="ml-1" />
               </h1>
             </Link>
           </div>
@@ -145,27 +157,25 @@ function Header({ activeHeading }) {
 
             <div className="flex">
               <div className="flex items-center">
-                <div className="relative cursor-pointer mr-[15px]">
+                <div onClick={() => setOpenWishlist(true)} className="relative cursor-pointer mr-[15px]">
                   <AiOutlineHeart
                     size={30}
                     color="rgb(255 255 255 / 83%)"
-                    onClick={() => setOpenWishlist(true)}
                   />
                   <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
-                    0
+                    {wishlist.length}
                   </span>
                 </div>
               </div>
 
               <div className="flex items-center">
-                <div className="relative cursor-pointer mr-[15px]">
+                <div onClick={() => setOpenCart(true)} className="relative cursor-pointer mr-[15px]">
                   <AiOutlineShoppingCart
                     size={30}
                     color="rgb(255 255 255 / 83%)"
-                    onClick={() => setOpenCart(true)}
                   />
                   <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
-                    1
+                    {cart&&cart.length}
                   </span>
                 </div>
               </div>
@@ -176,7 +186,7 @@ function Header({ activeHeading }) {
                     <Link to="/profile">
                       {/* <img src={`${server}/${user.avatar}`} className="w-[35px] h-[35px] rounded-full" alt="profilepic" /> */}
                       <img
-                        src={`https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-user-profile-avatar-png-image_10211467.png`}
+                        src={user&&user.avatar.url}
                         className="w-[35px] h-[35px] rounded-full"
                         alt="profilepic"
                       />
@@ -188,7 +198,7 @@ function Header({ activeHeading }) {
                   )}
                 </div>
               </div>
-              {openCart ? <ShoppingCart setOpenCart={setOpenCart} /> : null}
+              {openCart ? <ShoppingCart setOpenCart={setOpenCart} data={cart}/> : null}
               {openWishlist ? (
                 <Wishlist setOpenWishlist={setOpenWishlist} />
               ) : null}
@@ -222,7 +232,7 @@ function Header({ activeHeading }) {
                 onClick={() => setOpenCart(true)}
               />
               <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
-                1
+                {cart&&cart.length}
               </span>
             </div>
           </div>
@@ -283,8 +293,12 @@ function Header({ activeHeading }) {
                           <Link to={`/product/${Product_name}`} key={index}>
                             <div className="w-full flex items-start py-3">
                               <img
-                                src={`${i.image_Url[0].url}`}
+                                src={`${i.images[0]}`}
                                 alt=""
+                                onError={(e)=>{
+                                  e.target.onerror=null;
+                                  e.target.src=oppo;
+                                }}
                                 className="w-[40px] h-[40px] mr-[10px]"
                               />
                               <h1>{i.name}</h1>
@@ -301,7 +315,8 @@ function Header({ activeHeading }) {
             <div className={`w-[150px] bg-black h-[50px] my-3 flex items-center justify-center rounded-xl cursor-pointer ml-[12%]`}>
             <Link to="/shop-create">
               <h1 className="text-[#fff] flex items-center justify-center">
-                Become Seller <IoIosArrowRoundForward className="ml-1" />
+                {isSeller?"Go to Dashboard":"Become Selledddr"}
+                 <IoIosArrowRoundForward className="ml-1" />
               </h1>
             </Link>
           </div>

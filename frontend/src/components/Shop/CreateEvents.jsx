@@ -80,16 +80,15 @@ const CreateEvent = () => {
     newForm.append("name", name);
     newForm.append("description", description);
     newForm.append("category", category);
+    newForm.append("start_date", startDate.toISOString());
+    newForm.append("end_date", endDate.toISOString());
     newForm.append("tags", tags);
     newForm.append("originalPrice", originalPrice);
     newForm.append("discountPrice", discountPrice);
     newForm.append("stock", stock);
     newForm.append("shopId", seller._id);
-    newForm.append("start-date", startDate.toISOString());
-    newForm.append("end-date", endDate.toISOString());
     dispatch(createEvent(newForm));
   };
-
   return (
     <div className="w-[90%] md:w-[70%] bg-white  shadow-2xl h-[80vh] rounded-[4px] p-3 overflow-y-scroll">
       <h5 className="text-[30px] font-Poppins text-center">Create Event</h5>
@@ -162,7 +161,7 @@ const CreateEvent = () => {
           <label className="pb-2">Event Product Original Price</label>
           <input
             type="number"
-            name="price"
+            name="originalPrice"
             value={originalPrice}
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             onChange={(e) => setOriginalPrice(e.target.value)}
@@ -176,7 +175,7 @@ const CreateEvent = () => {
           </label>
           <input
             type="number"
-            name="price"
+            name="discountPrice"
             value={discountPrice}
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             onChange={(e) => setDiscountPrice(e.target.value)}
@@ -190,7 +189,7 @@ const CreateEvent = () => {
           </label>
           <input
             type="number"
-            name="price"
+            name="stock"
             value={stock}
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             onChange={(e) => setStock(e.target.value)}
@@ -207,7 +206,7 @@ const CreateEvent = () => {
           <input
             type="date"
             name="startDate"
-            id="start-date"
+            id="start_date"
             value={startDate ? startDate.toISOString().slice(0, 10) : ""}
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             onChange={handleStartDateChange}
@@ -223,7 +222,7 @@ const CreateEvent = () => {
           <input
             type="date"
             name="endDate"
-            id="end-date"
+            id="end_date"
             value={endDate ? endDate.toISOString().slice(0, 10) : ""}
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             onChange={handleEndDateChange}

@@ -2,12 +2,13 @@ npm=> Node Package Manager.It usually used to download and install packages.
 
 npx=> If the package is in local storage it will execute it otherwise first download and also execute then delete from memory and store it in temp.
 
-npm init=> will initialize Node.It will create package.json file,which will be used to take info for project packages. 
+npm init=> will initialize Node.It will create package.json file,which will be used to take info for project packages.
 npm init -y => initialize with default settings.
 
-<>...</>  This can be used to return multiple elements from a component => Called Fragment.
+<>...</> This can be used to return multiple elements from a component => Called Fragment.
 
 return (
+
   <div>
     <h1>Hello</h1>
     <p>World</p>
@@ -26,12 +27,11 @@ Center => mx-auto || my-auto
 
 w-full => Take Width Of Your Parent
 
-
 uncaught exception: Is a synchronous error that was not caught with a try...catch block.
 
 An unhandled promise rejection happens when a promise fails, but you don’t use .catch() or try/catch with async/await.
 
-When I was new with flutter and node, Each time when a response came from backend I had to match the response message's characters to check wheather the reponse was success or failure 
+When I was new with flutter and node, Each time when a response came from backend I had to match the response message's characters to check wheather the reponse was success or failure
 But with the use of error handling each time the frontend automatically came to know that the response is incase of failuer or success because incase of failue I have used new ErrorHandler("something went wrong",400) then automatically goes to catch block of axios.
 
 Redux Toolkit is used here in this project to store the whole data of the user,It will prevent fetching data again and again that we need at many places.
@@ -52,11 +52,40 @@ Both require the parent to be flex or grid
 
 Gradient Syntax in tailwind=>bg-gradient-to-r from-teal-400 to-teal-500
 
-
 Redux is only used when we need data at more than 1 place in our website.
 
-/* Becodemy gdrive -> https://drive.google.com/drive/folders/1VMYrWmM_WZNsfjOiMBkNU1M-JKUPAidc (also have deleted parts in it)
+    const allProductsData = allProducts ? [...allProducts] : [];  //Just making a copy of original state's array to avoid accediental modifications (if you do like slice sort etc)
 
+    //Parse = Parho
+    //stringify = Likho
+
+Initializing useState with useState({}) will give a huge row of errors because byDefault useState() is initialized with it.
+
+Reduce Function:
+const totalPrice = cart.reduce(
+(acc, item) => acc + item.qty \* item.discountPrice,
+0 //initialValue
+);
+
+// cart = [
+// { qty: 2, discountPrice: 500 }, // iPhone
+// { qty: 1, discountPrice: 300 }, // Samsung
+// ]
+// Execution:
+
+// Start with acc = 0.
+
+// First item: acc = 0 + (2 \* 500) = 1000.
+
+// Second item: acc = 1000 + (1 \* 300) = 1300.
+
+// ✅ Final totalPrice = 1300.
+
+Use onClick={functionName} 👉 when calling without arguments.
+
+Use onClick={() => functionName(arg)} 👉 when you need to pass arguments or run inline logic.
+
+/\* Becodemy gdrive -> https://drive.google.com/drive/folders/1VMYrWmM_WZNsfjOiMBkNU1M-JKUPAidc (also have deleted parts in it)
 
 To Add custom font in tailwind: App.css
 
@@ -64,22 +93,83 @@ To Add custom font in tailwind: App.css
 
 @import "tailwindcss";
 
-*{
-    scroll-behavior: smooth;
+\*{
+scroll-behavior: smooth;
 }
 
 @theme{
-    --font-roboto:Roboto,"sans-serif"
+--font-roboto:Roboto,"sans-serif"
 }
 
+className="bg-green-400 w-full flex flex-col md:flex-row pb-3">
+flex is used to make the box flexBox other then that flex will not work in general
 
- className="bg-green-400 w-full flex flex-col md:flex-row pb-3">
- flex is used to make the box flexBox other then that flex will not work in general
+      CLOUDINARY IMAGE UPLOAD
 
-YT link: 
+1.In .env give credentials in "...." quotations
+
+2.In server only give this => cloudinary.config({
+cloud_name: process.env.CLOUDINARY_NAME,
+api_key: process.env.CLOUDINARY_API_KEY,
+api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+CONNECTED TO CLOUDINARY
+
+3.Now send the image as a file from frontend to multer =>
+const handleFileInputChange = (e) => {
+const file = e.target.files[0];
+setAvatar(file);
+}
+
+const handleSubmit =async (e) => {
+e.preventDefault();
+try{
+
+      const config={headers:{"Content-Type":"multipart/form-data"}}
+
+    const newForm=new FormData();
+    newForm.append("file",avatar);
+    newForm.append("name",name);
+    newForm.append("email",email);
+    newForm.append("password",password);
+
+await axios.post(`${server}/api/auth/createUser`,newForm,config).then((res)=>{
+}}}
+
+for preview of avatar in signup page we have to use this
+< img
+src={URL.createObjectURL(avatar)}
+
+Why URL.createObjectURL(avatar)?
+avatar is a File object, not an actual URL.
+<img src={avatar} /> won’t work because <img> expects a string URL, not a File.
+
+
+4.  Now backend =>  
+    const filePath = req.file.path;
+            const myCloud = await cloudinary.v2.uploader.upload(filePath, {
+          folder: "avatars",
+        });
+
+5. for multiple images upload: 
+  const handleImageChange = (e) => {
+    e.preventDefault();
+
+    let files = Array.from(e.target.files);
+    setImages((prevImages) => [...prevImages, ...files]);
+  };//To put in images state
+
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newForm = new FormData();
+    images.forEach((image) => {
+      newForm.append("images", image);
+    });}
+
+YT link:
 part 1: https://www.youtube.com/watch?v=XxnUSZOgMLY
 part 2: https://www.youtube.com/watch?v=5ZodHXPAJCQ
 part 3: https://www.youtube.com/watch?v=LfI7H8zZSpg
 part 4: https://www.youtube.com/watch?v=x2kwp-_m17I&t=2s&ab_channel=Becodemy
 Repo
-https://github.com/shahriarsajeeb/Eshop-tutorial/tree/master */
+https://github.com/shahriarsajeeb/Eshop-tutorial/tree/master \*/

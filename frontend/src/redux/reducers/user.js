@@ -2,8 +2,6 @@ import { createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
   isAuthenticated: false,
-  isLoading:true,
-  // user:null,
 };
 
 export const userReducer = createReducer(initialState, (builder) => {
@@ -22,13 +20,72 @@ export const userReducer = createReducer(initialState, (builder) => {
       state.error = action.payload;
       state.isAuthenticated = false;
     })
+
+    .addCase("UpdateUserRequest", (state) => {
+      state.isLoading = true;
+    })
+    .addCase("UpdateUserSuccess", (state, action) => {
+      state.isAuthenticated = true;
+      state.isLoading = false;
+      // state.user=action.payload;
+      state.user = action.payload;
+    })
+    .addCase("UpdateUserFail", (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+      state.isAuthenticated = false;
+    })
+
+
+    .addCase("updateUserAddressRequest", (state) => {
+      state.updating = true;
+    })
+    .addCase("updateUserAddressSuccess", (state, action) => {
+      state.updating = false;
+      state.successMessage=action.payload.successMessage;
+      state.user = action.payload.user;
+    })
+    .addCase("updateUserAddressFailed", (state, action) => {
+      state.updating = false;
+      state.error = action.payload;
+    })
+
+
+    .addCase("deleteUserAddressRequest", (state) => {
+      state.updating = true;
+    })
+    .addCase("deleteUserAddressSuccess", (state, action) => {
+      state.updating = false;
+      state.successMessage=action.payload;
+    })
+    .addCase("deleteUserAddressFailed", (state, action) => {
+      state.updating = false;
+      state.error = action.payload;
+    })
+    
+
+    .addCase("getAllUsersRequest", (state) => {
+      state.updating = true;
+    })
+    .addCase("getAllUsersSuccess", (state, action) => {
+      state.updating = false;
+      state.users=action.payload;
+    })
+    .addCase("getAllUsersFailed", (state, action) => {
+      state.updating = false;
+      state.error = action.payload;
+    })
+
+    
+    .addCase("clearMessages", (state) => {
+      state.successMessage = null;
+    })
     .addCase("clearErrors", (state) => {
       state.error = null;
     });
 });
 
-
-                //More Understandable
+//More Understandable
 
 // import {createReducer} from '@reduxjs/toolkit';
 
@@ -51,5 +108,3 @@ export const userReducer = createReducer(initialState, (builder) => {
 //     state.error=null;
 //   })
 // })
-
-

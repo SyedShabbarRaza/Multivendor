@@ -3,22 +3,26 @@ import Header from '../components/Layout/Header'
 import { useSearchParams } from 'react-router-dom';
 import { productData } from '../static/data';
 import ProductCard from '../components/Route/ProductCard/ProductCard.jsx'
+import { useDispatch, useSelector } from 'react-redux';
 
 function ProductsPage() {
   const [searchParams]=useSearchParams();
   const categoryData=searchParams.get("category");
+  const {allProducts}=useSelector((state)=>state.products);
   const [data,setData]=useState([]);
   
   useEffect(()=>{
+    // setData(allProducts);
+    const allProd=allProducts?[...allProducts]:[];
     if(categoryData===null){
-      const d=productData&&productData.sort((a,b)=>a.total_sell-b.total_sell);//Lowest sales to highest sales
+      const d=allProd&&allProd.sort((a,b)=>a.sold_out-b.sold_out);//Lowest sales to highest sales
       setData(d);
     }else{
-      const d=productData&&productData.filter((i)=>i.category===categoryData)
+      const d=allProd&&allProd.filter((i)=>i.category===categoryData)
       setData(d);
     }
     window.scrollTo(0,0);
-  },[]);
+  },[allProducts]);
   return (
     <div>
         <Header activeHeading={3}/>

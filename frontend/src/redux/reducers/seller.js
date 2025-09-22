@@ -8,6 +8,7 @@ const initialState = {
 export const sellerReducer = createReducer(initialState, (builder) => {
   builder
     .addCase("LoadSellerRequest", (state) => {
+      state.isSeller = true;
       state.isLoading = true;
     })
     .addCase("LoadSellerSuccess", (state, action) => {
@@ -21,6 +22,20 @@ export const sellerReducer = createReducer(initialState, (builder) => {
       state.error = action.payload;
       state.isSeller = false;
     })
+
+    .addCase("getAllSellersRequest", (state) => {
+      state.isLoading = true;
+    })
+    .addCase("getAllSellersSuccess", (state, action) => {
+      state.isLoading = false;
+      // state.user=action.payload;
+      state.sellers = action.payload;
+    })
+    .addCase("getAllSellerFailed", (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    })
+
     .addCase("clearErrors", (state) => {
       state.error = null;
     });

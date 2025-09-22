@@ -7,7 +7,7 @@ function Navbar({ active }) {
     <div className="flex md:flex-row flex-col items-center">
       {navItems &&
         navItems.map((i, index) => (
-          <div className="flex">
+          <div className="flex" key={i.title}>
             <Link
               to={i.url}
               className={`${

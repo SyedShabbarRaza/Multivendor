@@ -1,3 +1,5 @@
+
+import cloudinary from 'cloudinary'
 import express from "express";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import upload from "../multer.js";
@@ -10,7 +12,8 @@ import path from "path";
 import fs from "fs";
 import sendShopToken from "../utils/shopToken.js";
 import { isLoggedIn, isSeller } from "../middleware/isLoggedIn.js";
-// import { isLoggedIn } from "../middleware/isLoggedIn.js";
+import user_model from "../models/user_model.js";
+import { isAdmin } from "../middleware/isLoggedIn.js";
 
 const router = express.Router();
 
@@ -34,8 +37,14 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
     }
 
     //It's a new User
-    const filename = req.file.filename;
-    const fileUrl = path.join(filename);
+    // const filename = req.file.filename;
+    // const fileUrl = path.join(filename);
+
+        const filePath = req.file.path;
+
+        const myCloud = await cloudinary.v2.uploader.upload(filePath, {
+      folder: "shop",
+    });
 
     // const fileUrl = `backend/public/images/${filename}`; //Will add / or for Mac \ to the path to local system
     // const fileUrl=path.join(filename)
@@ -43,7 +52,10 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
       name:req.body.name,
       email:email,
       password:req.body.password,
-      avatar: fileUrl,
+      avatar: {
+        public_id: myCloud.public_id,
+        url: myCloud.secure_url,
+      },
             address: req.body.address,
       phoneNumber: req.body.phoneNumber,
       zipCode: req.body.zipCode,
@@ -173,5 +185,175 @@ router.get("/logout",isLoggedIn,catchAsyncErrors(async(req,res,next)=>{
   }
 }))
 
+// get shop info
+router.get(
+  "/get-shop-info/:id",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const shop = await shop_model.findById(req.params.id);
+      res.status(201).json({
+        success: true,
+        shop,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+router.put(
+  "/shopUpdateAvatar",
+  isLoggedIn,
+  upload.single("image"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const existsUser = await shop_model.findById(req.user.id);
+
+      const existAvatarPath = `backend/public/images/${existsUser.avatar}`;
+
+      fs.unlinkSync(existAvatarPath);
+
+      const fileUrl = path.join(req.file.filename);
+
+      const user = await user_model.findByIdAndUpdate(req.user.id, {
+        avatar: fileUrl,
+      });
+
+      res.status(201).json({
+        success: true,
+        user,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// update seller info
+router.put(
+  "/updateSellerInfo",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { name, description, address, phoneNumber, zipCode } = req.body;
+
+      const shop = await shop_model.findOne(req.seller._id);
+
+      if (!shop) {
+        return next(new ErrorHandler("User not found", 400));
+      }
+
+      shop.name = name;
+      shop.description = description;
+      shop.address = address;
+      shop.phoneNumber = phoneNumber;
+      shop.zipCode = zipCode;
+
+      await shop.save();
+
+      res.status(201).json({
+        success: true,
+        shop,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// all sellers --- for admin
+router.get(
+  "/adminAllSellers",
+  isLoggedIn,
+  isAdmin("Admin"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const sellers = await shop_model.find().sort({
+        createdAt: -1,
+      });
+      res.status(201).json({
+        success: true,
+        sellers,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// // delete seller ---admin
+router.delete(
+  "/deleteSeller/:id",
+  isLoggedIn,
+  isAdmin("Admin"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const seller = await shop_model.findById(req.params.id);
+
+      if (!seller) {
+        return next(
+          new ErrorHandler("Seller is not available with this id", 400)
+        );
+      }
+
+      await shop_model.findByIdAndDelete(req.params.id);
+
+      res.status(201).json({
+        success: true,
+        message: "Seller deleted successfully!",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// update seller withdraw methods --- sellers
+router.put(
+  "/updatePaymentMethods",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { withdrawMethod } = req.body;
+
+      const seller = await shop_model.findByIdAndUpdate(req.seller._id, {
+        withdrawMethod,
+      });
+
+      res.status(201).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// delete seller withdraw merthods --- only seller
+router.delete(
+  "/deleteWithdrawMethod/",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const seller = await shop_model.findById(req.seller._id);
+
+      if (!seller) {
+        return next(new ErrorHandler("Seller not found with this id", 400));
+      }
+
+      seller.withdrawMethod = null;
+
+      await seller.save();
+
+      res.status(201).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 
 export default router;

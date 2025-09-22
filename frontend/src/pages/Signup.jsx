@@ -25,6 +25,16 @@ function Signup() {
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     setAvatar(file);
+    //Not Working right now saying Too large payLoad
+    //     const reader = new FileReader();
+
+    // reader.onload = () => {
+    //   if (reader.readyState === 2) {
+    //     setAvatar(reader.result);
+    //   }
+    // };
+
+    // reader.readAsDataURL(e.target.files[0]);
   };
 
   const handleSubmit =async (e) => {
@@ -38,8 +48,8 @@ function Signup() {
     newForm.append("name",name);
     newForm.append("email",email);
     newForm.append("password",password);
-    
-  const res= await axios.post(`${server}/api/auth/createUser`,newForm,config).then((res)=>{
+
+  await axios.post(`${server}/api/auth/createUser`,newForm,config).then((res)=>{
       console.log(res);
       if(res.data.success===true){
         toast.success(`${res.data.message}`)
@@ -51,7 +61,7 @@ function Signup() {
       
     })
   }catch(err){
-      toast(`${res.message}`)
+      toast(`${err.response.data.message}`)
     }
   };
 

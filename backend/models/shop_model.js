@@ -28,51 +28,50 @@ const shopSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  // role: {
-  //   type: String,
-  //   default: "Seller",
-  // },
+  role: {
+    type: String,
+    default: "Seller",
+  },
   avatar: {
-    type:String,
-    // public_id: {
-    //   type: String,
-    //   required: true,
-    // },
-    // url: {
-    //   type: String,
-    //   required: true,
-    // },
+    public_id: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
   },
   zipCode: {
     type: Number,
     required: true,
   },
-  // withdrawMethod: {
-  //   type: Object,
-  // },
-  // availableBalance: {
-  //   type: Number,
-  //   default: 0,
-  // },
-  // transections: [
-  //   {
-  //     amount: {
-  //       type: Number,
-  //       required: true,
-  //     },
-  //     status: {
-  //       type: String,
-  //       default: "Processing",
-  //     },
-  //     createdAt: {
-  //       type: Date,
-  //       default: Date.now(),
-  //     },
-  //     updatedAt: {
-  //       type: Date,
-  //     },
-  //   },
-  // ],
+  withdrawMethod: {
+    type: Object,
+  },
+  availableBalance: {
+    type: Number,
+    default: 0,
+  },
+  transections: [
+    {
+      amount: {
+        type: Number,
+        required: true,
+      },
+      status: {
+        type: String,
+        default: "Processing",
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now(),
+      },
+      updatedAt: {
+        type: Date,
+      },
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now(),

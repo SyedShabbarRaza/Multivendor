@@ -1,15 +1,19 @@
 import React from 'react'
 import { AiOutlineCreditCard, AiOutlineMessage } from 'react-icons/ai';
 import { BiLogIn, BiShoppingBag } from 'react-icons/bi';
-import { MdOutlineTrackChanges } from 'react-icons/md';
+import { MdOutlineAdminPanelSettings, MdOutlineTrackChanges, MdPassword } from 'react-icons/md';
 import { RxPerson } from 'react-icons/rx';
 import { TbAddressBook } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import server from '../../server';
 import { toast } from 'react-toastify';
+import { RiLockPasswordLine } from 'react-icons/ri';
+import { useSelector } from 'react-redux';
 
 function ProfileSidebar({active,setActive}) {
+    const {user}=useSelector((state)=>state.user);
+    console.log(user)
     const navigate=useNavigate();
     const logoutHandler=()=>{
     axios.get(`${server}/api/auth/logout`,{withCredentials:true}).then((res)=>{
@@ -43,13 +47,35 @@ console.log(error.response.data.message)
             <span className={`${active===5?"text-[red] ":""} hidden md:block `}>Track Order</span>
         </div>
         <div className="flex cursor-pointer items-center mb-10" onClick={()=>setActive(6)}>
-            <AiOutlineCreditCard size={20} color={active===6?"red":""}/>
-            <span className={`${active===6?"text-[red] ":""} hidden md:block `}>Payment Method</span>
+            <RiLockPasswordLine size={20} color={active===6?"red":""}/>
+            <span className={`${active===6?"text-[red] ":""} hidden md:block `}>Change Password</span>
         </div>
         <div className="flex cursor-pointer items-center mb-10" onClick={()=>setActive(7)}>
             <TbAddressBook size={20} color={active===7?"red":""}/>
             <span className={`${active===7?"text-[red] ":""} hidden md:block `}>Address Book</span>
         </div>
+
+        {user && user?.role === "Admin" && (
+        <Link to="/admin/dashboard">
+          <div
+            className="flex items-center cursor-pointer w-full mb-8"
+            onClick={() => setActive(8)}
+          >
+            <MdOutlineAdminPanelSettings
+              size={20}
+              color={active === 7 ? "red" : ""}
+            />
+            <span
+              className={`pl-3 ${
+                active === 8 ? "text-[red]" : ""
+              } md:block hidden`}
+            >
+              Admin Dashboard
+            </span>
+          </div>
+        </Link>
+      )}
+
         <div className="flex cursor-pointer items-center mb-10" onClick={()=>setActive(8)|| logoutHandler()}>
             <BiLogIn size={20} color={active===8?"red":""}/>
             <span className={`${active===8?"text-[red] ":""} hidden md:block `}>Login</span>

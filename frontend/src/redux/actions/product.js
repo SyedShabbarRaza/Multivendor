@@ -76,22 +76,22 @@ export const deleteProduct = (id) => async (dispatch) => {
   }
 };
 
-// // get all products
-// export const getAllProducts = () => async (dispatch) => {
-//   try {
-//     dispatch({
-//       type: "getAllProductsRequest",
-//     });
+// get all products
+export const getAllProducts = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "getAllProductsRequest",
+    });
 
-//     const { data } = await axios.get(`${server}/product/get-all-products`);
-//     dispatch({
-//       type: "getAllProductsSuccess",
-//       payload: data.products,
-//     });
-//   } catch (error) {
-//     dispatch({
-//       type: "getAllProductsFailed",
-//       payload: error.response.data.message,
-//     });
-//   }
-// };
+    const { data } = await axios.get(`${server}/api/product/get-all-products`);
+    dispatch({
+      type: "getAllProductsSuccess",
+      payload: data.allProducts,
+    });
+  } catch (error) {
+    dispatch({
+      type: "getAllProductsFailed",
+      payload: error.response.data.message,
+    });
+  }
+};

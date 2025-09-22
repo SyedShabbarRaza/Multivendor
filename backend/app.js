@@ -7,6 +7,11 @@ import shopRoutes from './controllers/shop.js';
 import productRoutes from './controllers/product.js';
 import eventRoutes from './controllers/event.js';
 import coupounCode from './controllers/coupounCode.js'
+import paymentRoutes from './controllers/payment.js'
+import orderRoutes from './controllers/order.js'
+import conversationRoutes from './controllers/conversation.js'
+import messageRoutes from './controllers/message.js'
+import withdrawRoutes from './controllers/withdraw.js'
 import cors from 'cors'
 
 
@@ -16,6 +21,7 @@ app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173",credentials:true },));
 app.use(express.urlencoded({extended:true}))  // To access req.body
 app.use(cookieParser()); //To use Cookies
+
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({
@@ -30,6 +36,11 @@ app.use("/api/shop",shopRoutes)
 app.use("/api/product",productRoutes)
 app.use("/api/event",eventRoutes)
 app.use("/api/coupoun",coupounCode)
+app.use("/api/payment",paymentRoutes)
+app.use("/api/order",orderRoutes)
+app.use("/api/conversation",conversationRoutes)
+app.use("/api/message",messageRoutes)
+app.use("/api/withdraw",withdrawRoutes)
 
 app.use(errorHandling);
 

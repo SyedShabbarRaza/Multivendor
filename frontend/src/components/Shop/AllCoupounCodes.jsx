@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteProduct, getAllProductsShop } from "../../redux/actions/product";
+// import { deleteProduct, getAllProductsShop } from "../../redux/actions/product";
 import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -8,6 +8,9 @@ import Loader from "../Layout/Loader";
 import { DataGrid } from "@mui/x-data-grid";
 import { RxCross1 } from "react-icons/rx";
 import styles from "../../styles/styles.js";
+import axios from "axios";
+import server from "../../server.js";
+import { toast } from "react-toastify";
 
 // Redux is only used when we need data at more than 1 place in our website. Here Coupouns are required only here unlike products that were also required at home page.
 
@@ -31,10 +34,12 @@ function AllCoupounCodes() {
 //   };
 
   const handleDelete = async (id) => {
-    axios.delete(`${server}/coupon/delete-coupon/${id}`,{withCredentials: true}).then((res) => {
+    await axios.delete(`${server}/api/coupoun/delete-shop-coupoun/${id}`,{withCredentials: true}).then((res) => {
       toast.success("Coupon code deleted succesfully!")
+      window.location.reload();
+    }).catch((err)=>{
+        toast.error(err.response.data.message);
     })
-    window.location.reload();
   };
 
   const handleSubmit = async (e) => {
@@ -63,8 +68,19 @@ function AllCoupounCodes() {
       });
   };
 
-  useEffect(() => {
-    dispatch(getAllCoupounsShop(seller._id));
+useEffect(() => {
+    setIsLoading(true);
+    axios
+      .get(`${server}/api/coupoun/get-all-coupouns-shop/${seller._id}`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setIsLoading(false);
+        setCoupouns(res.data.coupouns);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+      });
   }, [dispatch]);
 
   const columns = [
@@ -80,43 +96,7 @@ function AllCoupounCodes() {
       headerName: "Price",
       minWidth: 100,
       flex: 0.6,
-    },
-    {
-      field: "Stock",
-      headerName: "Stock",
-      type: "number",
-      minWidth: 80,
-      flex: 0.5,
-    },
-
-    {
-      field: "sold",
-      headerName: "Sold out",
-      type: "number",
-      minWidth: 130,
-      flex: 0.6,
-    },
-    {
-      field: "Preview",
-      flex: 0.8,
-      minWidth: 100,
-      headerName: "",
-      type: "number",
-      sortable: false,
-      renderCell: (params) => {
-        const d = params.row.name;
-        const productName = d.replace(/\s+/g, "-");
-        return (
-          <>
-            <Link to={`/product/${productName}`}>
-              <Button>
-                <AiOutlineEye size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
-    },
+    },  
 
     {
       field: "Delete",
@@ -140,14 +120,13 @@ function AllCoupounCodes() {
 
   const row = [];
 
-  products &&
-    products.forEach((item) => {
+  coupouns &&
+    coupouns.forEach((item) => {
       row.push({
         id: item._id,
         name: item.name,
-        price: "US$ " + item.discountPrice,
-        Stock: item.stock,
-        sold: item?.sold_out,
+        price:item.value + " %",
+        // sold: item?.sold_out,
       });
     });
 
