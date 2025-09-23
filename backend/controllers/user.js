@@ -60,7 +60,7 @@ router.post("/createUser", upload.single("file"), async (req, res, next) => {
 
     //Sending OTP Mail
     const activationToken = createActivationToken(newUser);
-    const actionvationUrl = `http://localhost:5173/activation/${activationToken}`;
+    const actionvationUrl = `https://multivendor-a326.vercel.app/activation/${activationToken}`;
     try {
       await sendMail({
         email: newUser.email,

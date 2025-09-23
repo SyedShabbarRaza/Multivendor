@@ -1,20 +1,22 @@
 //create token and saving that in cookies
 
-const sendToken=(user,statusCode,res)=>{
-    const token=user.getJwtToken();
+const sendToken = (user, statusCode, res) => {
+  const token = user.getJwtToken();
 
-    //Options for cookies
-    const options={
-        expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+  const isProd = process.env.NODE_ENV === "production";
+
+  const options = {
+    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000), // 90 days
     httpOnly: true,
-    sameSite: "none",
-    secure: true,
-    }
+    sameSite: isProd ? "None" : "Lax",   // Lax is fine in local dev
+    secure: isProd,                      // true only on https
+  };
 
-    res.status(statusCode).cookie("token",token,options).json({
-        success:true,
-        user,
-        token,
+  res.status(statusCode)
+    .cookie("token", token, options)
+    .json({
+      success: true,
+      user,
+      token,
     });
-}
-export default sendToken;
+};
