@@ -65,7 +65,7 @@ function App() {
     store.dispatch(loadSeller());
     store.dispatch(getAllProducts());
     store.dispatch(getAllEvents());
-    getStripeApikey();
+    // getStripeApikey();
   }, []);
 
   return (

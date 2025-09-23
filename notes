@@ -166,6 +166,18 @@ avatar is a File object, not an actual URL.
       newForm.append("images", image);
     });}
 
+
+
+            DEPLOYEMENT
+  
+  cors =>app.use(cors({ origin: "https://multivendor-a326.vercel.app",credentials:true },));
+
+  sendToken should have
+   sameSite: "none",
+    secure: true,
+
+    
+
 YT link:
 part 1: https://www.youtube.com/watch?v=XxnUSZOgMLY
 part 2: https://www.youtube.com/watch?v=5ZodHXPAJCQ

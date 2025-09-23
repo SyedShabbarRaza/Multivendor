@@ -8,7 +8,7 @@ import fs from "fs";
 import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
-import sendToken from "../utils/sendToken.js";
+import {sendToken} from "../utils/sendToken.js";
 import { isLoggedIn,isAdmin } from "../middleware/isLoggedIn.js";
 import user_model from "../models/user_model.js";
 
