@@ -18,6 +18,7 @@ import ShoppingCart from "../ShoppingCart/ShoppingCart.jsx";
 import Wishlist from "../Wishlist/Wishlist.jsx";
 import { RxCross1 } from "react-icons/rx";
 import oppo from '../../assets/oppo.jpeg'
+import shop from '../../assets/pngegg.png'
 function Header({ activeHeading }) {
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { isSeller } = useSelector((state) => state.seller);
@@ -62,11 +63,12 @@ function Header({ activeHeading }) {
     <>
       <div className="w-full mx-auto">
         <div className="hidden mx-2 md:flex md:h-[50px] md:my-[20px] items-center justify-between">
-          <div>
+          <div className="ml-4 w-[50px] md:w-[70px]">
             <Link to="/">
               <img
-                src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+                src={shop}
                 alt=""
+                className=""
               />
             </Link>
           </div>

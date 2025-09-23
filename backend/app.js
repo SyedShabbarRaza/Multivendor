@@ -18,12 +18,6 @@ import cors from 'cors'
 const app = express();
 
 app.use(express.json());
-// app.use(cors({
-//   origin: ["https://multivendor-a326.vercel.app"],
-//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//   allowedHeaders: ["Content-Type", "Authorization"],
-//   credentials: true,
-// }));
 
 app.use(cors({ origin: ["https://multivendor-a326.vercel.app","http://localhost:5173"],credentials:true },));
 app.use(express.urlencoded({extended:true}))  // To access req.body
@@ -32,7 +26,7 @@ app.use(cookieParser()); //To use Cookies
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({
-    path: "backend/config/.env"
+    path: "config/.env"
   });
 }
 

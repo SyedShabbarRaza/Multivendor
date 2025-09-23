@@ -167,16 +167,76 @@ avatar is a File object, not an actual URL.
     });}
 
 
+Multer is a middleware for handling multipart/form-data (the type of form used for file uploads).
+Without Multer, you’d have to parse those files manually from the raw request stream (very messy).
+Multer gives you access to req.file / req.files with metadata like:
+
+
 
             DEPLOYEMENT
-  
-  cors =>app.use(cors({ origin: "https://multivendor-a326.vercel.app",credentials:true },));
+1. I think it is good to have backend and frontEnd two seperate folders with their own package,lock and node_modules files.
+  "type": "module"  // It is important for both package.json
 
-  sendToken should have
-   sameSite: "none",
-    secure: true,
+            FRONTEND DEPLOYEMENT
+1. In package.json the script should be: 
+"scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+   
+Simply go to vercel and add root directory as ./frontend framework as vite that all deploye it.
 
-    
+            BACKEND DEPLOYEMENT
+1. In package.json the script should be: 
+
+"name": "multivendor",
+  "version": "1.0.0",
+  "main": "server.js",// The name of main file from where server is running at any port
+  "type": "module", //ESM new syntax
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1", // default
+    "dev": "nodemon server.js", // Name of main file
+    "start": "node server.js" //Again name of main file
+  }
+
+2. add a vercel.json file in backend like this:
+{
+  "version": 2,
+  "builds": [
+    { "src": "server.js", "use": "@vercel/node" } //main file name =>server.js replace with your's
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "server.js" }
+  ]
+}
+
+3. IMPORTANT cors should be like this:
+app.use(cors({ origin: ["https://multivendor-a326.vercel.app","http://localhost:5173"],credentials:true },));
+
+4. env setup at main file or in this case of multivendor should be to just for non_production:
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({
+    path: "backend/config/.env"
+  });
+}
+
+5. For cookies management when sending cookie must add this to that options:
+
+const options={
+        expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    httpOnly: true,
+    sameSite: "none",//These lines are important
+    secure: true,//These lines are important
+    }
+    res.status(statusCode).cookie("token",token,options).json({
+    ....
+    });
+
+
+6. Simply go to vercel and add root directory as ./backend thats all deploye it.
+
 
 YT link:
 part 1: https://www.youtube.com/watch?v=XxnUSZOgMLY

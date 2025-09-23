@@ -2,7 +2,7 @@ import multer from "multer";
 
 const storage = multer.diskStorage({
   destination: function (req, res, cb) {
-    cb(null, "backend/public/images"); //Call BackFunction(Error,destination)
+    cb(null, "public/images"); //Call BackFunction(Error,destination)
   },
   filename: function (req, file, cb) {
     const uniqueSuffix =
@@ -11,6 +11,10 @@ const storage = multer.diskStorage({
     cb(null, filename + "-" + uniqueSuffix + ".png");
   },
 });
+// // Store file in memory (RAM), not disk
+// const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
 export default upload;
+
+
