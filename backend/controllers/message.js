@@ -2,7 +2,7 @@ import message_model from '../models/messages.js'
 import express from "express";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
-import { isSeller } from "../middleware/isLoggedIn.js";
+// import { isSeller } from "../middleware/isLoggedIn.js";
 import upload from '../multer.js';
 
 const router = express.Router();

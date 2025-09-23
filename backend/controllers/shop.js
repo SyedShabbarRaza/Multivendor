@@ -4,16 +4,14 @@ import express from "express";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import upload from "../multer.js";
 import shop_model from "../models/shop_model.js";
-import sendToken from "../utils/sendToken.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail.js";
 import path from "path";
 import fs from "fs";
 import sendShopToken from "../utils/shopToken.js";
-import { isLoggedIn, isSeller } from "../middleware/isLoggedIn.js";
+import { isLoggedIn, isSeller,isAdmin } from "../middleware/isLoggedIn.js";
 import user_model from "../models/user_model.js";
-import { isAdmin } from "../middleware/isLoggedIn.js";
 
 const router = express.Router();
 

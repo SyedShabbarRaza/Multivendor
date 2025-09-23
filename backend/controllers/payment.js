@@ -1,9 +1,12 @@
 import express from "express";
 import Stripe from "stripe";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
-// console.log(process.env.STRIPE_SECRET_KEY,"dasfs")
 import dotenv from "dotenv";
-dotenv.config({ path: "config/.env" });
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config({
+        path: "config/.env"
+    });
+}
 const router = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 

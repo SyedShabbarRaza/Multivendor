@@ -6,7 +6,7 @@ import ErrorHandler from "../utils/ErrorHandler.js";
 import upload from "../multer.js";
 import shop_model from "../models/shop_model.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
-import product_model from "../models/product_model.js";
+// import product_model from "../models/product_model.js";
 import { isAdmin, isLoggedIn, isSeller } from "../middleware/isLoggedIn.js";
 import event_model from "../models/event_model.js";
 import fs from 'fs';
