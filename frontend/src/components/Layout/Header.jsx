@@ -13,7 +13,6 @@ import DropDown from "./DropDown.jsx";
 import Navbar from "./Navbar.jsx";
 import { CgProfile } from "react-icons/cg";
 import { useSelector } from "react-redux";
-import server from "../../server.js";
 import ShoppingCart from "../ShoppingCart/ShoppingCart.jsx";
 import Wishlist from "../Wishlist/Wishlist.jsx";
 import { RxCross1 } from "react-icons/rx";
@@ -61,8 +60,8 @@ function Header({ activeHeading }) {
 
   return (
     <>
-      <div className="w-full mx-auto">
-        <div className="hidden mx-2 md:flex md:h-[50px] md:my-[20px] items-center justify-between">
+      <div className="w-full mx-auto bg-gray-100">
+        <div className="hidden mx-2 md:flex md:h-[50px] md:my-[10px] items-center justify-between bg-gray-100">
           <div className="ml-4 w-[50px] md:w-[70px]">
             <Link to="/">
               <img
@@ -79,14 +78,14 @@ function Header({ activeHeading }) {
               placeholder="Search Product..."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md"
+              className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-lg"
             />
             <AiOutlineSearch
               size={30}
               className="absolute right-2 top-1.5 cursor-pointer"
             />
             {searchData && searchData.length > 0 ? (
-              <div className="absolute bg-green-50 shadow-sm-2 z-[9] p-3">
+              <div className="absolute bg-green-50 shadow-sm-2 z-[9] p-3 w-full">
                 {searchData &&
                   searchData.map((i, index) => {
                     // const d = i.name;
@@ -95,15 +94,15 @@ function Header({ activeHeading }) {
                       <Link to={`/product/${i._id}`} key={index}>
                         <div className="w-full flex items-start py-3">
                           <img
-                            src={`${i.images[0]}`}
+                            src={`${i.images[0]["url"]}`}
                             alt=""
                             onError={(e)=>{
                               e.target.onerror=null;
                               e.target.src=oppo
                             }}
-                            className="w-[40px] h-[40px] mr-[10px]"
+                            className="w-[40px] h-[40px] mr-[10px] rounded-lg"
                           />
-                          <h1>{i.name}</h1>
+                          <h1 className="text-center items-center text-2xl font-bold">{i.name}</h1>
                         </div>
                       </Link>
                     );
@@ -112,7 +111,7 @@ function Header({ activeHeading }) {
             ) : null}
           </div>
 
-          <div className="w-40 bg-black h-[50px] my-3 flex items-center justify-center rounded-xl cursor-pointer">
+          <div className="w-40 bg-[#F97316] hover:bg-[#EA580C] h-[50px] my-3 flex items-center justify-center rounded-xl cursor-pointer">
             <Link to="/shop-create">
               <h1 className="text-[#fff] flex items-center">
                 {isSeller?"Go to Dashboard":"Become Seller"} <IoIosArrowRoundForward className="ml-1" />

@@ -1,30 +1,3 @@
-// category:"Cloths"
-// createdAt:"2025-08-16T18:25:19.682Z"
-// description:"It's a new product for checking."
-// discountPrice:600
-// images:['Screenshot-1755368971837-740822887.png']
-// name:"newProduct"
-// originalPrice:700
-// shop:{_id: '689bb7876cdf1f34dd58837c', name: 'Raza Mart', email: 'bsf23006517@ue.edu.pk', address: '49/7/A/7/16 STREET No 1,Mohalla TajPark,Shalimar town CANT lahore', phoneNumber: 3484822249, …}
-// shopId:"689bb7876cdf1f34dd58837c"
-// sold_out:0
-// stock:10
-// tags: "cloths"
-// __v:0
-// _id:"68a0ce1044a06b3658a7596a"
-// [[Prototype]]
-// : 
-// Object
-// 1
-// : 
-// {_id: '68a0db9c4b5d8ad8c2a71f9e', name: 'Oppo Reno 12', description: 'Lorem ipsum dolor sit amet consectetur adipisicing… velit pariatur fugit ullam voluptates fugiat id?', category: 'Computers and Laptops', tags: 'Oppo Mobiles', …}
-// length
-// : 
-// 2
-// [[Prototype]]
-// : 
-// Array(0)
-
 import { useEffect, useState } from "react";
 import oppo from '../../../assets/oppo.jpeg'
 import { Link } from "react-router-dom";
@@ -93,7 +66,8 @@ const addToWishlistHandler=(data)=>{
 
   return (
     <>
-      <div className="w-full h-[379px] bg-white rounded-lg shadow-sm p-3 relative ">
+      <div className="w-full h-[379px] bg-white rounded-lg shadow-sm p-3 relative transform transition duration-300 ease-in-out 
+                hover:-translate-y-2 hover:scale-105 hover:shadow-2xl hover:shadow-gray-500">
         <div className="flex justify-center">
           <Link to={isEvent?`/product/${data._id}?isEvent=true`:`/product/${data._id}`}>
           <img
@@ -171,13 +145,13 @@ const addToWishlistHandler=(data)=>{
               color={ "#444"}
               title="Add to Cart"
             />
+        </div>
+      </div>
             {
                 open?(
                     <ProductDetailsCard setOpen={setOpen} data={data}/>
                 ):null
             }
-        </div>
-      </div>
     </>
   );
 }
