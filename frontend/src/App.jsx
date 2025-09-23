@@ -42,8 +42,8 @@ import TrackOrderPage from "./pages/TrackOrderPage.jsx";
 import ShopAllRefunds from "./pages/Shop/ShopAllRefunds.jsx";
 import ShopSettingsPage from "./pages/Shop/ShopSettingsPage.jsx";
 import ShopWithdrawMoneyPage from "./pages/Shop/ShopWithdrawMoneyPage.jsx";
-import ShopInboxPage from "./pages/Shop/ShopInboxPage.jsx";
-import UserInboxMessages from "./pages/UserInbox.jsx";
+// import ShopInboxPage from "./pages/Shop/ShopInboxPage.jsx";
+// import UserInboxMessages from "./pages/UserInbox.jsx";
 import AdminDashboardPage from "./pages/AdminDashboard.jsx";
 import AdminProtectedRoute from "./ProtectedRoutes/AdminProtectedRoute.jsx";
 import AdminDashboardUsers from "./pages/AdminDashboardUsers.jsx";
@@ -70,7 +70,7 @@ function App() {
 
   return (
     <BrowserRouter>
-          {stripeApikey && (
+          {/* {stripeApikey && (
         <Elements stripe={loadStripe(stripeApikey)}>
           <Routes>
             <Route
@@ -83,7 +83,7 @@ function App() {
             />
           </Routes>
         </Elements>
-      )}
+      )} */}
 
       <Routes>
         <Route path="/order/success" element={<OrderSuccessPage />} />
@@ -120,14 +120,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-                <Route
+                {/* <Route
           path="/inbox"
           element={
             <ProtectedRoute>
               <UserInboxMessages />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
           path={`/activation/:activation_token`}
           element={<ActivationPage />}
@@ -178,14 +178,14 @@ function App() {
             </SellerProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/dashboard-messages"
           element={
             <SellerProtectedRoute>
               <ShopInboxPage/>
             </SellerProtectedRoute>
           }
-        />
+        /> */}
 
         <Route
           path="/order/:id"

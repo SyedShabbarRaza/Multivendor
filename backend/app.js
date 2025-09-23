@@ -25,7 +25,7 @@ app.use(express.json());
 //   credentials: true,
 // }));
 
-app.use(cors({ origin: "https://multivendor-a326.vercel.app",credentials:true },));
+app.use(cors({ origin: ["https://multivendor-a326.vercel.app","http://localhost:5173"],credentials:true },));
 app.use(express.urlencoded({extended:true}))  // To access req.body
 app.use(cookieParser()); //To use Cookies
 

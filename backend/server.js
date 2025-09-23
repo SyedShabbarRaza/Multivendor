@@ -21,6 +21,9 @@ const server = app.listen(process.env.PORT, () => {
 
 });
 
+app.get("/", (req, res) => {
+  res.send("✅ Multivendor backend is running!");
+});
 
 process.on("uncaughtException", (err) => {
   console.log(`Error:${err.message}`);
