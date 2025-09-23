@@ -8,6 +8,8 @@ const sendShopToken=(seller,statusCode,res)=>{
     const options={
         expires:new Date(Date.now()+90*24*60*60*1000),  //Expires in 90 days 
         httpOnly:true,
+        sameSite: "none",
+    secure: true,
     }
 console.log("token::",token)
     res.status(statusCode).cookie("seller_token",token,options).json({
