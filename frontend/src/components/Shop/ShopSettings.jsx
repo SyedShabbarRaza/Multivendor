@@ -17,35 +17,67 @@ const ShopSettings = () => {
   const [address, setAddress] = useState(seller && seller.address);
   const [phoneNumber, setPhoneNumber] = useState(seller && seller.phoneNumber);
   const [zipCode, setZipcode] = useState(seller && seller.zipCode);
-
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const handleImage = async (e) => {
-    const reader = new FileReader();
+    const file = e.target.files[0];
+    setAvatar(file);
 
-    reader.onload = () => {
-      if (reader.readyState === 2) {
-        setAvatar(reader.result);
-        axios
-          .put(
-            `${server}/api/shop/shopUpdateAvatar`,
-            { avatar: reader.result },
-            {
-              withCredentials: true,
-            }
-          )
-          .then((res) => {
-            dispatch(loadSeller());
-            toast.success("Avatar updated successfully!");
-          })
-          .catch((error) => {
-            toast.error(error.response.data.message);
-          });
-      }
-    };
+    const formData = new FormData();
+    formData.append("image", e.target.files[0]);
+    setLoading(true);
 
-    reader.readAsDataURL(e.target.files[0]);
+    await axios
+      .put(`${server}/api/shop/shopUpdateAvatar`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      })
+      .then((response) => {
+        setLoading(false);
+
+        toast.success("Avatar updated successfully!");
+        dispatch(loadSeller());
+        // window.location.reload();
+      })
+      .catch((error) => {
+        setLoading(false);
+
+        toast.error(error.response.data.message);
+      });
   };
+
+  // const handleImage = async (e) => {
+  //   const file = e.target.files[0];
+  //   setAvatar(file);
+
+  //   const formData = new FormData();
+  //   formData.append("image", e.target.files[0]);
+
+  //   reader.onload = () => {
+  //     if (reader.readyState === 2) {
+  //       setAvatar(reader.result);
+  //       axios
+  //         .put(
+  //           `${server}/api/shop/shopUpdateAvatar`,
+  //           { avatar: reader.result },
+  //           {
+  //             withCredentials: true,
+  //           }
+  //         )
+  //         .then((res) => {
+  //           dispatch(loadSeller());
+  //           toast.success("Avatar updated successfully!");
+  //         })
+  //         .catch((error) => {
+  //           toast.error(error.response.data.message);
+  //         });
+  //     }
+  //   };
+
+  // };
 
   const updateHandler = async (e) => {
     e.preventDefault();
@@ -77,7 +109,7 @@ const ShopSettings = () => {
         <div className="w-full flex items-center justify-center">
           <div className="relative">
             <img
-              src={avatar ? avatar : `${seller.avatar?.url}`}
+              src={seller && seller.avatar?.url}
               alt=""
               className="w-[200px] h-[200px] rounded-full cursor-pointer"
               onError={(e) => {
@@ -85,20 +117,26 @@ const ShopSettings = () => {
                 e.target.src = oppo;
               }}
             />
-            <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer absolute bottom-[10px] right-[15px]">
+            <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center absolute bottom-[10px] right-[15px]">
               <input
                 type="file"
                 id="image"
                 className="hidden"
                 onChange={handleImage}
               />
-              <label htmlFor="image">
+              <label htmlFor="image" className="cursor-pointer">
                 <AiOutlineCamera />
               </label>
             </div>
+            <div
+              className={`font-bold text-green-400 flex justify-center items-center ${
+                loading ? "block" : "hidden"
+              } `}
+            >
+              Loading...
+            </div>
           </div>
         </div>
-
         {/* shop info */}
         <form
           aria-required={true}

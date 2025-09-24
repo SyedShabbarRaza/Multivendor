@@ -27,23 +27,34 @@ router.post(
         // const imageUrls = files.map((file) => `${file.filename}`);
 
                  // Upload images to Cloudinary
-              const files = req.files; // multer files
-              const uploadedImages = await Promise.all(
-                files.map((file) =>
-                  cloudinary.v2.uploader.upload(file.path, {
-                    folder: "events",
-                  })
-                )
-              );
+                      const uploadedImages=[];
+             
+                         for (const file of req.files) {
+                     const result = await new Promise((resolve, reject) => {
+                       const myCloud = cloudinary.v2.uploader.upload_stream(
+                         {
+                           folder: "events",
+                         },
+                         (error, myCloud) => {
+                           if (error) reject(error);
+                           else resolve(myCloud);
+                         }
+                       );
+             
+                       myCloud.end(file.buffer);
+                     });
+                   uploadedImages.push({
+                     public_id: result.public_id,
+                       url: result.secure_url
+                   })
+                   }
+
 
               // Build product data
       const eventData = {
         ...req.body,
         shop,
-        images: uploadedImages.map((img) => ({
-          public_id: img.public_id,
-          url: img.secure_url,
-        })),
+        images: uploadedImages
       };
 
         // const eventData = req.body;

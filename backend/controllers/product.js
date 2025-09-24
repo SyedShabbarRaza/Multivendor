@@ -26,29 +26,38 @@ router.post(
       } else {
         // const files = req.files;
         // const imageUrls = files.map((file) => `${file.filename}`);
-
         // const productData = req.body;
         // productData.images = imageUrls;
         // productData.shop = shop;
 
          // Upload images to Cloudinary
-      const files = req.files; // multer files
-      const uploadedImages = await Promise.all(
-        files.map((file) =>
-          cloudinary.v2.uploader.upload(file.path, {
-            folder: "products",
-          })
-        )
-      );
+      
+         const uploadedImages=[];
 
+            for (const file of req.files) {
+        const result = await new Promise((resolve, reject) => {
+          const myCloud = cloudinary.v2.uploader.upload_stream(
+            {
+              folder: "products",
+            },
+            (error, myCloud) => {
+              if (error) reject(error);
+              else resolve(myCloud);
+            }
+          );
+
+          myCloud.end(file.buffer);
+        });
+      uploadedImages.push({
+        public_id: result.public_id,
+          url: result.secure_url
+      })
+      }
       // Build product data
       const productData = {
         ...req.body,
         shop,
-        images: uploadedImages.map((img) => ({
-          public_id: img.public_id,
-          url: img.secure_url,
-        })),
+        images: uploadedImages,
       };
 
         const products = await product_model.create(productData);

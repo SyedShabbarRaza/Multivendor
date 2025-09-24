@@ -1,4 +1,4 @@
-import cloudinary from 'cloudinary';
+import cloudinary from "cloudinary";
 import express from "express";
 import path from "path";
 import upload from "../multer.js";
@@ -9,8 +9,9 @@ import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import sendToken from "../utils/sendToken.js";
-import { isLoggedIn,isAdmin } from "../middleware/isLoggedIn.js";
+import { isLoggedIn, isAdmin } from "../middleware/isLoggedIn.js";
 import user_model from "../models/user_model.js";
+import frontend from "../utils/frontend.js";
 
 const router = express.Router();
 
@@ -18,66 +19,70 @@ router.post("/createUser", upload.single("file"), async (req, res, next) => {
   //Starting Slash is very important for routes
   try {
     console.log("createUser");
-    const { name, email, password} = req.body;
+    const { name, email, password } = req.body;
     const user = await User.findOne({ email });
 
     if (user) {
-      const filename = req.file.filename;
-      const filePath = `backend/public/images/${filename}`;
-      fs.unlink(filePath, (err) => {
-          if (err) {
-              console.log(err);
-              res.status.json({ message: "Error deleting file" });
-            }
+      // filename = req.file.filename;
+      // const filePath = `backend/public/images/${filename}`;
+      // fs.unlink(filePath, (err) => {
+      //   if (err) {
+      //     console.log(err);
+      //     res.status.json({ message: "Error deleting file" });
+      //   }
+      // });// const
+      return next(new ErrorHandler("User already exists", 400));
+    }
+
+    // const filename = req.file.filename;
+    // const filePath = `backend/public/images/${filename}`;
+
+    const myCloud = await cloudinary.v2.uploader.upload_stream(
+      { folder: "avatars" },
+      async (error, myCloud) => {
+        if (error) return next(new ErrorHandler(error.message, 500));
+
+        const newUser = {
+          name,
+          email,
+          password,
+          avatar: {
+            public_id: myCloud.public_id,
+            url: myCloud.secure_url,
+          },
+        };
+
+        //It's a new User
+        // const filename = req.file.filename;
+        // const fileUrl = path.join(filename);
+
+        // const fileUrl = `backend/public/images/${filename}`; //Will add / or for Mac \ to the path to local system
+        // const fileUrl=path.join(filename)
+
+        //Sending OTP Mail
+        const activationToken = createActivationToken(newUser);
+        const actionvationUrl = `${frontend}/activation/${activationToken}`;
+        try {
+          await sendMail({
+            email: newUser.email,
+            subject: "Activate your account",
+            message: `Hello ${newUser.name}, please click on the link to activate your account: ${actionvationUrl}`,
           });
-          return next(new ErrorHandler("User already exists", 400));
+
+          console.log("email bhej diya");
+
+          res.status(201).json({
+            success: true,
+            message: `please chech your email:-${newUser.email} to activate your account`,
+          });
+        } catch (err) {
+          console.log("email ka masla");
+          return next(new ErrorHandler(err.message, 500));
         }
 
-        
-        // const filename = req.file.filename;
-        // const filePath = `backend/public/images/${filename}`;
-        const filePath = req.file.path;
-
-        const myCloud = await cloudinary.v2.uploader.upload(filePath, {
-      folder: "avatars",
-    });
-
-    //It's a new User
-    // const filename = req.file.filename;
-    // const fileUrl = path.join(filename);
-
-    // const fileUrl = `backend/public/images/${filename}`; //Will add / or for Mac \ to the path to local system
-    // const fileUrl=path.join(filename)
-    const newUser = {
-      name,
-      email,
-      password,
-      avatar: {
-        public_id: myCloud.public_id,
-        url: myCloud.secure_url,
-      },
-    };
-
-    //Sending OTP Mail
-    const activationToken = createActivationToken(newUser);
-    const actionvationUrl = `https://multivendor-a326.vercel.app/activation/${activationToken}`;
-    try {
-      await sendMail({
-        email: newUser.email,
-        subject: "Activate your account",
-        message: `Hello ${newUser.name}, please click on the link to activate your account: ${actionvationUrl}`,
-      });
-
-      console.log("email bhej diya")
-      
-      res.status(201).json({
-        success: true,
-        message: `please chech your email:-${newUser.email} to activate your account`,
-      });
-    } catch (err) {
-      console.log("email ka masla")
-      return next(new ErrorHandler(err.message, 500));
-    }
+      }
+    );
+    myCloud.end(req.file.buffer);
   } catch (err) {
     return next(new ErrorHandler(err.message, 400));
   }
@@ -150,7 +155,7 @@ router.get(
   isLoggedIn,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const user = await User.findById(req.user.id);
+      const user = await User.findById(req.user._id);// _id and id both work _id=>object id and id=>simple string
       //I this is Faltu
       if (!user) return next(new ErrorHandler("User doesn't exists.", 400));
 
@@ -172,6 +177,8 @@ router.get(
       res.cookie("token", null, {
         expires: new Date(Date.now()),
         httpOnly: true,
+        sameSite: "none",
+        secure: true,
       });
 
       res.status(201).json({
@@ -192,6 +199,9 @@ router.put(
       const { name, email, password, phoneNumber } = req.body;
 
       const user = await User.findOne({ email }).select("+password");
+      // That means whenever you query for a user, the password field will not be returned (because in schema select is false which means by default no password will be send with query) unless you explicitly request it.
+      // So, .select("+password") is telling Mongoose:
+      // 👉 “Even though password is hidden by default, include it in this query result.”
 
       if (!user) {
         return next(new ErrorHandler("User not found", 400));
@@ -227,20 +237,39 @@ router.put(
     try {
       const existsUser = await User.findById(req.user.id);
 
-      const existAvatarPath = `backend/public/images/${existsUser.avatar}`;
+      if (existsUser.avatar?.public_id) {
+        await cloudinary.v2.uploader.destroy(existsUser.avatar.public_id);
+      }
 
-      fs.unlinkSync(existAvatarPath);
+      // const existAvatarPath = `public/images/${existsUser.avatar}`;
+      // fs.unlinkSync(existAvatarPath);
+      // const fileUrl = path.join(req.file.filename);
 
-      const fileUrl = path.join(req.file.filename);
+      const myCloud = await cloudinary.v2.uploader.upload_stream(
+        { folder: "avatars" },
+        async (error, myCloud) => {
+          if (error) return next(new ErrorHandler(error.message, 500));
 
-      const user = await User.findByIdAndUpdate(req.user.id, {
-        avatar: fileUrl,
-      });
-
-      res.status(201).json({
-        success: true,
-        user,
-      });
+          const user = await User.findByIdAndUpdate(
+            req.user.id,
+            {
+              avatar: {
+                public_id: myCloud.public_id,
+                url: myCloud.secure_url,
+              },
+            },
+            { new: true }
+            //         By default, Mongoose’s findByIdAndUpdate returns the old (pre-update) document.
+            // If you pass { new: true }, it will return the updated document after the update.
+          );
+          res.status(201).json({
+            success: true,
+            user,
+          });
+        }
+      );
+      // Pipe buffer to cloudinary
+      myCloud.end(req.file.buffer); // From here cloudinary function is being called and getting the buffer of our file
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }

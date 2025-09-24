@@ -1,5 +1,4 @@
-
-import cloudinary from 'cloudinary'
+import cloudinary from "cloudinary";
 import express from "express";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import upload from "../multer.js";
@@ -10,27 +9,28 @@ import sendMail from "../utils/sendMail.js";
 import path from "path";
 import fs from "fs";
 import sendShopToken from "../utils/shopToken.js";
-import { isLoggedIn, isSeller,isAdmin } from "../middleware/isLoggedIn.js";
+import { isLoggedIn, isSeller, isAdmin } from "../middleware/isLoggedIn.js";
 import user_model from "../models/user_model.js";
+import frontend from "../utils/frontend.js";
 
 const router = express.Router();
 
 router.post("/create-shop", upload.single("file"), async (req, res, next) => {
   try {
-    console.log("req.body",req.body);
+    console.log("req.body", req.body);
 
-    const {email } = req.body;
+    const { email } = req.body;
     const shopEmail = await shop_model.findOne({ email });
 
     if (shopEmail) {
-      const filename = req.file.filename;
-      const filePath = `backend/public/images/${filename}`;
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.log(err);
-         return res.status.json({ message: "Error deleting file" });
-        }
-      });
+      // const filename = req.file.filename;
+      // const filePath = `backend/public/images/${filename}`;
+      // fs.unlink(filePath, (err) => {
+      //   if (err) {
+      //     console.log(err);
+      //     return res.status.json({ message: "Error deleting file" });
+      //   }
+      // });
       return next(new ErrorHandler("User already exists", 400));
     }
 
@@ -38,29 +38,30 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
     // const filename = req.file.filename;
     // const fileUrl = path.join(filename);
 
-        const filePath = req.file.path;
+    const myCloud = await cloudinary.v2.uploader.upload_stream(
+      { folder: "shopAvatars" },
+      async (error, myCloud) => {
+        if (error) return next(new ErrorHandler(error.message, 500));
 
-        const myCloud = await cloudinary.v2.uploader.upload(filePath, {
-      folder: "shop",
-    });
-
-    // const fileUrl = `backend/public/images/${filename}`; //Will add / or for Mac \ to the path to local system
-    // const fileUrl=path.join(filename)
-    const newUser = {
-      name:req.body.name,
-      email:email,
-      password:req.body.password,
+        const newUser = {
+      name: req.body.name,
+      email: email,
+      password: req.body.password,
       avatar: {
         public_id: myCloud.public_id,
         url: myCloud.secure_url,
       },
-            address: req.body.address,
+      address: req.body.address,
       phoneNumber: req.body.phoneNumber,
       zipCode: req.body.zipCode,
-    };
+        };
+
+
+    // const fileUrl = `backend/public/images/${filename}`; //Will add / or for Mac \ to the path to local system
+    // const fileUrl=path.join(filename)
 
     const activationToken = createActivationToken(newUser);
-    const actionvationUrl = `http://localhost:5173/seller/activation/${activationToken}`;
+    const actionvationUrl = `${frontend}/seller/activation/${activationToken}`;
     try {
       await sendMail({
         email: newUser.email,
@@ -74,8 +75,11 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
     } catch (err) {
       return next(new ErrorHandler(err.message, 500));
     }
+
+  });
+      myCloud.end(req.file.buffer);
   } catch (err) {
-    console.log("Main Catch Mein:",err)
+    console.log("Main Catch Mein:", err);
     return next(new ErrorHandler(err.message, 400));
   }
 });
@@ -120,7 +124,7 @@ router.post(
 
       sendShopToken(seller, 201, res);
     } catch (error) {
-      console.log("error::",error)
+      console.log("error::", error);
       return next(new ErrorHandler(error.message, 500));
     }
   })
@@ -139,49 +143,54 @@ router.post(
       const isPasswordValid = await user.comparePassword(password);
       if (!isPasswordValid)
         return next(new ErrorHandler("Please provide correct info.", 400));
-    
-    sendShopToken(user, 201, res);
-} catch (err) {
-    return next(new ErrorHandler("Something went wrong.", 400));
-}
+
+      sendShopToken(user, 201, res);
+    } catch (err) {
+      return next(new ErrorHandler("Something went wrong.", 400));
+    }
   })
 );
 
-
 //Loading the Shop
-//after logIn loading the User 
-router.get("/getSeller",isSeller,catchAsyncErrors(async(req,res,next)=>{
-    try{
-        const seller=await shop_model.findById(req.seller._id);
-        //I this is Faltu
-        if(!seller) return next(new ErrorHandler("Shop doesn't exists.", 400));
-        
-        res.status(200).json({
-            success:true,
-            seller,
-        })
+//after logIn loading the User
+router.get(
+  "/getSeller",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const seller = await shop_model.findById(req.seller._id);
+      //I this is Faltu
+      if (!seller) return next(new ErrorHandler("Shop doesn't exists.", 400));
 
-    }catch(err){
-        return next(new ErrorHandler("Please provide correct info.", 400));
+      res.status(200).json({
+        success: true,
+        seller,
+      });
+    } catch (err) {
+      return next(new ErrorHandler("Please provide correct info.", 400));
     }
-}))
+  })
+);
 
+router.get(
+  "/logout",
+  isLoggedIn,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      res.cookie("seller_token", null, {
+        expires: new Date(Date.now()),
+        httpOnly: true,
+      });
 
-router.get("/logout",isLoggedIn,catchAsyncErrors(async(req,res,next)=>{
-  try{
-    res.cookie("seller_token",null,{
-      expires:new Date(Date.now()),
-      httpOnly:true,
-    });
-
-    res.status(201).json({
-      success:true,
-      message:"Log out successful!"
-    });
-  }catch(error){
-    return next(new ErrorHandler(error.message,500));
-  }
-}))
+      res.status(201).json({
+        success: true,
+        message: "Log out successful!",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 
 // get shop info
 router.get(
@@ -201,27 +210,40 @@ router.get(
 
 router.put(
   "/shopUpdateAvatar",
-  isLoggedIn,
+  isSeller,
   upload.single("image"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const existsUser = await shop_model.findById(req.user.id);
+      const existsUser = await shop_model.findById(req.seller.id);
 
-      const existAvatarPath = `backend/public/images/${existsUser.avatar}`;
+      if (existsUser.avatar?.public_id) {
+        await cloudinary.v2.uploader.destroy(existsUser.avatar.public_id);
+      }
 
-      fs.unlinkSync(existAvatarPath);
-
-      const fileUrl = path.join(req.file.filename);
-
-      const user = await user_model.findByIdAndUpdate(req.user.id, {
-        avatar: fileUrl,
-      });
-
-      res.status(201).json({
-        success: true,
-        user,
-      });
+      const myCloud = await cloudinary.v2.uploader.upload_stream(
+        { folder: "shopAvatars" },
+        async (error, myCloud) => {
+          if (error) return next(new ErrorHandler(error.message, 500));
+console.log("dffhadsaf")
+          const user = await shop_model.findByIdAndUpdate(
+            req.seller.id,
+            {
+              avatar: {
+                public_id: myCloud.public_id,
+                url: myCloud.secure_url,
+              },
+            },
+            { new: true }
+          );
+          res.status(201).json({
+            success: true,
+            message:"Image uploaded successfully",
+          });
+        }
+      );
+      myCloud.end(req.file.buffer);
     } catch (error) {
+      console.log(error);
       return next(new ErrorHandler(error.message, 500));
     }
   })

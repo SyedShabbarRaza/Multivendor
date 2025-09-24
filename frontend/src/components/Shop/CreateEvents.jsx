@@ -88,6 +88,9 @@ const CreateEvent = () => {
     newForm.append("stock", stock);
     newForm.append("shopId", seller._id);
     dispatch(createEvent(newForm));
+    if(success){
+      toast.success("Event Created Successfully");
+    }
   };
   return (
     <div className="w-[90%] md:w-[70%] bg-white  shadow-2xl h-[80vh] rounded-[4px] p-3 overflow-y-scroll">

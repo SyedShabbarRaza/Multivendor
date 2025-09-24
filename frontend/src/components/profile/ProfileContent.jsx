@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 import { MdOutlineTrackChanges } from "react-icons/md";
-import { deleteUserAddress, updateUser, updatUserAddress } from "../../redux/actions/user";
+import { deleteUserAddress, loadUser, updateUser, updatUserAddress } from "../../redux/actions/user";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { RxCross1 } from "react-icons/rx";
@@ -24,6 +24,7 @@ function ProfileContent({ active }) {
   const [phoneNumber, setPhoneNumber] = useState(user && user.phoneNumber);
   const [password, setPassword] = useState("");//""
   const [avatar, setAvatar] = useState("");
+  const [loading,setLoading]=useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -47,51 +48,29 @@ function ProfileContent({ active }) {
   };
 
   const handleImage = async (e) => {
-    // const reader = new FileReader();
     const file = e.target.files[0];
     setAvatar(file);
 
     const formData = new FormData();
     formData.append("image", e.target.files[0]);
-
-    await axios
-      .put(`${server}/api/auth/updateAvatar`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      })
-      .then((response) => {
-        // dispatch(loadUser());
-        window.location.reload();
-        // toast.success("avatar updated successfully!");
+setLoading(true);
+await axios
+.put(`${server}/api/auth/updateAvatar`, formData, {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+  withCredentials: true,
+})
+.then((response) => {
+        setLoading(false);
+        toast.success("avatar updated successfully!");
+        dispatch(loadUser());
+        // window.location.reload();
       })
       .catch((error) => {
+        setLoading(false);
         toast.error(error);
       });
-
-    // reader.onload = () => {
-    //   if (reader.readyState === 2) {
-    //     setAvatar(reader.result);
-    // axios
-    //   .put(
-    //     `${server}/api/auth/updateAvatar`,
-    //     { avatar: reader.result },
-    //     {
-    //       withCredentials: true,
-    //     }
-    //   )
-    //   .then((response) => {
-    //     dispatch(loadUser());
-    //     toast.success("avatar updated successfully!");
-    //   })
-    //   .catch((error) => {
-    //     toast.error(error);
-    //   });
-    //   }
-    // };
-
-    // reader.readAsDataURL(e.target.files[0]);
   };
 
   return (
@@ -121,6 +100,7 @@ function ProfileContent({ active }) {
             </div>
           </div>
           <br />
+          <div className={`font-bold text-green-400 flex justify-center items-center ${loading ?"block":"hidden"}`}>Loading...</div>
           <div className="w-full px-10 md:px-5">
             <form onSubmit={handleSubmit} aria-required={true}>
               <div className="w-full flex flex-col md:flex-row pb-3">

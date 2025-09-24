@@ -78,7 +78,7 @@ console.log(error.response.data.message)
 
         <div className="flex cursor-pointer items-center mb-10" onClick={()=>setActive(8)|| logoutHandler()}>
             <BiLogIn size={20} color={active===8?"red":""}/>
-            <span className={`${active===8?"text-[red] ":""} hidden md:block `}>Login</span>
+            <span className={`${active===8?"text-[red] ":""} hidden md:block `}>LogOut</span>
         </div>
     </div>
   )

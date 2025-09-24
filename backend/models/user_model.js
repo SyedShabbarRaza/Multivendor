@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter your password"],
     minLength: [4, "Password should be greater than 4 characters"],
-    select: false,
+    select: false, // That means whenever you query for a user, the password field will not be returned unless you explicitly request it.
   },
   phoneNumber:{
     type: Number,

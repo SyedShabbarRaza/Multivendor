@@ -172,6 +172,33 @@ Without Multer, you’d have to parse those files manually from the raw request 
 Multer gives you access to req.file / req.files with metadata like:
 
 
+      const user = await User.findOne({ email }).select("+password");
+      // That means whenever you query for a user, the password field will not be returned (because in schema select is false which means by default no password will be send with query) unless you explicitly request it.
+      // So, .select("+password") is telling Mongoose:
+      // 👉 “Even though password is hidden by default, include it in this query result.”
+
+            const myCloud = await cloudinary.v2.uploader.upload(
+        req.file.path, //This is the path of our local directory Vercel does not allow persistent file storage.
+        // The file system is read-only, and any files written during a request are discarded after the request finishes.
+        // So req.file.path may exist only for the duration of the request (temporary in memory, but unreliable).
+        {
+          folder: "avatars",
+        }
+      );
+
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        {
+          avatar: {
+            public_id: myCloud.public_id,
+            url: myCloud.secure_url,
+          },
+        },
+        { new: true }
+      );
+      //         By default, Mongoose’s findByIdAndUpdate returns the old (pre-update) document.
+      // If you pass { new: true }, it will return the updated document after the update.
+
 
             DEPLOYEMENT
 1. I think it is good to have backend and frontEnd two seperate folders with their own package,lock and node_modules files.

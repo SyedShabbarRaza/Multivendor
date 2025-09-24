@@ -111,7 +111,7 @@ function Header({ activeHeading }) {
             ) : null}
           </div>
 
-          <div className="w-40 bg-[#F97316] hover:bg-[#EA580C] h-[50px] my-3 flex items-center justify-center rounded-xl cursor-pointer">
+          <div className="w-40 bg-black h-[50px] my-3 flex items-center justify-center rounded-xl cursor-pointer">
             <Link to="/shop-create">
               <h1 className="text-[#fff] flex items-center">
                 {isSeller?"Go to Dashboard":"Become Seller"} <IoIosArrowRoundForward className="ml-1" />
@@ -188,7 +188,7 @@ function Header({ activeHeading }) {
                       {/* <img src={`${server}/${user.avatar}`} className="w-[35px] h-[35px] rounded-full" alt="profilepic" /> */}
                       <img
                         src={user&&user.avatar.url}
-                        className="w-[35px] h-[35px] rounded-full"
+                        className="w-[40px] h-[40px] rounded-full"
                         alt="profilepic"
                       />
                     </Link>
