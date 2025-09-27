@@ -6,7 +6,7 @@ const Categories = () => {
   const navigate = useNavigate();
   return (
     <>
-      <div className="w-[70%] bg-green-900 mx-auto hidden sm:block">
+      <div className="w-[70%] mx-auto hidden shadow-md sm:block">
         <div
           className="my-12 flex justify-between w-full shadow-sm bg-white p-3 rounded-md"
         >

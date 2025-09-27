@@ -12,11 +12,11 @@ function Events() {
       {isLoading ? (
         <Loader />
       ) : (
-        <div className={`${styles.section}`}>
+        <div className="w-[90%] mx-auto">
           <div className={`${styles.heading}`}>
             <h1>Popular Events</h1>
           </div>
-          <div className="w-full grid">
+          <div className="w-full grid shadow-lg rounded-2xl">
             <EventCard data={allEvents && allEvents[0]} />
           </div>
         </div>

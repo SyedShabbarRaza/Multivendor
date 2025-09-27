@@ -34,7 +34,7 @@ function EventCard({active,data}) {
         }} />
       </div>
       <div className="w-full lg:w-[60%] m-auto flex flex-col justify-center">
-        <h2 className="ext-[25px] font-[600] font-Roboto text-[#333]">
+        <h2 className="text-[25px] font-[600] font-Roboto text-[#333]">
           {data.name}
         </h2>
         <p>

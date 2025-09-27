@@ -30,7 +30,7 @@ function CountDown({data}) {
     }
 
     return (
-        <span key={key} className="text-[18px] text-amber-400">
+        <span key={key} className="text-[20px] font-bold text-red-600">
       {timeLeft[key]} {key}{" "}
     </span>
     )

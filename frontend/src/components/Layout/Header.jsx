@@ -62,14 +62,17 @@ function Header({ activeHeading }) {
     <>
       <div className="w-full mx-auto bg-gray-100">
         <div className="hidden mx-2 md:flex md:h-[50px] md:my-[10px] items-center justify-between bg-gray-100">
-          <div className="ml-4 w-[50px] md:w-[70px]">
+          <div className="w-[50px] md:w-[90px] flex items-center">
             <Link to="/">
               <img
                 src={shop}
                 alt=""
-                className=""
+                className="w-12"
               />
             </Link>
+<div className="w-1 flex"><h1 className="font-bold text-md mr-1">Raza</h1>
+<h1 className="font-bold text-md">Mart</h1>
+</div>
           </div>
 
           <div className=" w-[35%] relative">
@@ -78,14 +81,14 @@ function Header({ activeHeading }) {
               placeholder="Search Product..."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-lg"
+              className="h-[40px] w-full px-2 border-green-600 border-[2px] rounded-lg"
             />
             <AiOutlineSearch
               size={30}
               className="absolute right-2 top-1.5 cursor-pointer"
             />
             {searchData && searchData.length > 0 ? (
-              <div className="absolute bg-green-50 shadow-sm-2 z-[9] p-3 w-full">
+              <div className="absolute bg-gray-300 rounded-2xl shadow-sm-2 z-[9] p-3 w-full">
                 {searchData &&
                   searchData.map((i, index) => {
                     // const d = i.name;
@@ -111,7 +114,8 @@ function Header({ activeHeading }) {
             ) : null}
           </div>
 
-          <div className="w-40 bg-black h-[50px] my-3 flex items-center justify-center rounded-xl cursor-pointer">
+          <div className="w-40 h-[50px] my-3 flex items-center justify-center rounded-xl cursor-pointer 
+  bg-gradient-to-r from-green-500 to-yellow-400 text-white font-semibold shadow-lg hover:opacity-90 transition">
             <Link to="/shop-create">
               <h1 className="text-[#fff] flex items-center">
                 {isSeller?"Go to Dashboard":"Become Seller"} <IoIosArrowRoundForward className="ml-1" />
@@ -122,7 +126,7 @@ function Header({ activeHeading }) {
         <div
           className={`${
             active === true ? "shadow-sm fixed top-0 left-0 z-10" : null
-          } hidden transition md:flex items-center justify-between w-full bg-[#3321c8] h-[70px]`}
+          } hidden transition md:flex items-center justify-between w-full bg-green-600 h-[70px]`}
         >
           <div
             className={`${styles.section} relative ${styles.noramlFlex} justify-between`}
@@ -220,10 +224,14 @@ function Header({ activeHeading }) {
           <div className="flex items-center justify-center">
             <Link to="/">
               <img
-                src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+                src={shop}
                 alt=""
+                className="w-12"
               />
             </Link>
+            <div className="w-1 flex"><h1 className="font-bold text-md mr-1">Raza</h1>
+<h1 className="font-bold text-md">Mart</h1>
+</div>
           </div>
 
           <div className="flex items-center">
@@ -338,7 +346,7 @@ function Header({ activeHeading }) {
 
                       <img
                 src={
-                  "https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-user-profile-avatar-png-image_10211467.png"
+                  user&&user.avatar.url
                 }
                 className="w-[100px] h-[100px] rounded-full object-cover border-[3px] border-green-300"
                 alt="profilepic"

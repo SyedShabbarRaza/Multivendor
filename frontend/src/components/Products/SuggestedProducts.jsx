@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "../Route/ProductCard/ProductCard";
 import { productData } from "../../static/data";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const SuggestedProducts = ({ data }) => {
   const {allProducts} = useSelector((state) => state.products);
@@ -25,7 +26,7 @@ const SuggestedProducts = ({ data }) => {
           <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
              {
                 products && products.map((i,index) => (
-                    <ProductCard data={i} key={index} />
+                  <ProductCard data={i} key={index} />
                 ))
              }
       </div>
